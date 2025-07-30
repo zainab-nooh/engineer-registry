@@ -1,0 +1,91 @@
+const Engineer = require('../../models/engineer')
+all paths 
+//Index /
+app.get('/engineers', async(req,res,next) => {
+    try{  }
+    const enginners = await Engineer.find({}) 
+    next() 
+    res.render('engineers/Index')
+    catch(error)
+})
+//New //new
+app.get('/engineers/new' async (req, res, next ) => {
+    try {
+        next()
+        res.render('egineers/New)
+    }
+    catch(error) {
+
+    }
+})
+//Destroy /:id
+app.delete('engineers/:id', async(req, res, next) => {
+    try {
+       await Engineer.findOneAndDelete({'_id' : req.params.id})
+    } catch(error)
+})
+//Update /:id
+app.put('/engineers/:id', async(req, res, next) => {
+    if(req.body.available === 'on' ) {
+        req.body.available === true
+    } else if (req.body.available !== true) {
+        req.body.available === false
+    }
+    try {
+        await Engineer.FindOneAndUpdate({ '_id': req.params.id}, req.body, { new: true} )
+        next() 
+        res.redirect(`/engineers/${req.params.id}`)
+    }
+    catch(error) {
+
+    }
+})
+//Create /
+app.post('/engineers/:id', async(req, res, next) => {
+    if(req.body.available === 'on' ) {
+        req.body.available === true
+    } else if (req.body.available !== true) {
+        req.body.available === false
+    }
+    try {
+ const createdEngineer = await Engineer.create(req.body) 
+ next() 
+ res.redirect(`/engineers/${createdEngineer._id}`)
+    }
+    catch(error) {
+
+    }
+})
+//Edit /:id/edit
+app.get('/engineers/:id/edit', async(req, res, next) => {
+    try{
+        const foundEngineer = await Engineer.findById(req.params.id) <-- then will be traked by token NOT ID 
+        if (!foundEngineer) {
+            throe new Error('There is no Engineer with that Id in our database')
+        }else{
+            next()
+            res.render('/engineers/Edit', {
+                engineer: foundEngineer
+            })
+        }
+    }
+    catch(error) {
+
+    }
+})
+//Show /:id
+app.get('/engineers/:id', async(req, res, next) => {
+    try {
+        if (!foundEngineer) {
+            throe new Error('There is no Engineer with that Id in our database')
+        }else{
+            next()
+            res.render('/engineers/Show', {
+                engineer: foundEngineer
+            })
+        }        
+    }
+    catch(error) {
+
+    }
+})
