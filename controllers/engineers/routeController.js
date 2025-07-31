@@ -2,21 +2,25 @@ const express = require('express')
 const router = express.Router()
 const viewController = require('./viewController')
 const dataController = require('./dataController')
+const authDataController = require('../auth/dataController')
 
 
 //Index -> Get 
-router.get('/', dataController.index, viewController.index )
-//New -> Get No data needed just view
-router.get('/new', viewController.newView)
-//Destroy -> delete
-router.delete('/:id', dataController.delete, viewController.redirectHome)
-//Update -> PUT
-router.put('/:id', dataController.update, viewController.update)
-//Create -> POST
-router.post('/', dataController.create, viewController.create)
-//Edit -> Get
-router.get('/:id/edit', dataController.show, viewController.edit)
-//Show -> Get
-router.get('/:id', dataController.show, viewController.show)
+router.get('/', authDataController.auth, /*check if the token exists in the header or query, set req.user and res.locals.data.token */ 
+    dataController.index, /*grab and save login user's fruits */
+    viewController.index); /*Display the logged in users fruits and also teh link the new page with the token */
+// New
+router.get('/new', authDataController.auth, viewController.newView );
+// Delete
+router.delete('/:id', authDataController.auth, dataController.destroy, viewController.redirectHome);
+// Update
+router.put('/:id', authDataController.auth, dataController.update, viewController.redirectShow);
+// Create
+router.post('/', authDataController.auth, dataController.create, viewController.redirectHome);
+// Edit
+router.get('/:id/edit',authDataController.auth, dataController.show, viewController.edit);
+// Show
+router.get('/:id', authDataController.auth, dataController.show, viewController.show);
 
+// Export my router
 module.exports = router

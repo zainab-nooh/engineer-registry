@@ -1,6 +1,12 @@
 const RESOURCE_PATH = '/engineers'
 
 const viewController = {
+    signUp(req, res, next) {
+    res.render('/auth/SignUp')
+  },
+  signIn(req, res, next) {
+    res.render('/auth/SignIn')
+  },
     //Index
     index(req, res, next) {
         res.render('engineers/Index', res.locals.data)
@@ -10,18 +16,7 @@ const viewController = {
     newView(req, res, next ) {
         res.render('engineers/New', res.locals.data)
     },
-    //Destroy
-    // delete(req, res, next) {
-
-    // },
-    //Update
-    update(req, res, next) {
-        res.redirect(`/engineers/${req.params.id}`)
-    },
-    //Create
-    create(req, res, next) {
-        res.redirect(`/engineers/${res.locals.data.engineer._id}`)
-    },
+    
     //Edit
     edit(req, res, next) {
             res.render('engineers/Edit', res.locals.data)
@@ -32,9 +27,22 @@ const viewController = {
         res.render('engineers/Show', res.locals.data)
     }, 
 
-    redirectHome(req, res, next) {
-        res.redirect(RESOURCE_PATH)
+  redirectHome(req, res, next){
+    if (res.locals.data.token) {
+      res.redirect(`${RESOURCE_PATH}?token=${res.locals.data.token}`)
+    }else {
+      res.redirect(RESOURCE_PATH)
     }
+  },
+  redirectShow(req, res, next){
+     if (res.locals.data.token) {
+      res.redirect(`${RESOURCE_PATH}?token=${res.locals.data.token}`)
+     }
+     else {
+       res.redirect(RESOURCE_PATH + `/${req.params.id}`)
+     }
+  }
 }
+
 
 module.exports = viewController

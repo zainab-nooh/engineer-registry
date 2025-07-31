@@ -8,6 +8,7 @@ const jsxEngine = require('jsx-view-engine')
 const methodOverride = require('method-override')
 const userRoutes = require('./controllers/auth/routeController')
 const engineerRoutes = require('./controllers/engineers/routeController')
+const apiRoutes = require('./routes/apiRoutes')
 
 //const engineer
 const app = express()
@@ -26,7 +27,14 @@ app.use( (req,res,next) => {
 
 app.use(express.static('public'))
 app.use(morgan('dev'))
+
+
+// Web routes (for views)
 app.use('/engineers',engineerRoutes)
-// app.use('/users', userRoutes)
+app.use('/users', userRoutes)
+
+
+// API routes (for JSON responses)
+app.use('/api', apiRoutes)
 
 module.exports = app

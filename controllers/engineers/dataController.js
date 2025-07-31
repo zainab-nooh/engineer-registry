@@ -4,7 +4,8 @@
     //Index
     dataController.index = async (req, res, next) => {
         try {
-            res.locals.data =  {engineers : await Engineer.find({}) }
+            const user = await req.user.populate('engineers')
+            res.locals.data.engineers = user.engineers  
             next()
         }
         catch(error) { 
@@ -20,7 +21,7 @@
     // }
 
     //Destroy
-    dataController.delete = async (req, res, next) => {
+    dataController.destroy = async (req, res, next) => {
         try {
             await Engineer.findOneAndDelete({'_id' : req.params.id})
             next()
@@ -43,19 +44,34 @@
             res.status(400).send({message: error.message})}
     }
     //Create
-    dataController.create = async (req, res, next) => {
-        if(req.body.available === 'on' ) {
-            req.body.available = true
-        } else if (req.body.available !== true) {
-            req.body.available = false
-        }
-        try {
-            res.locals.data.engineer = await Engineer.create(req.body) 
-            next()
-        }
-        catch(error) { 
-            res.status(400).send({message: error.message})}
+dataController.create = async (req, res, next) => {
+    if(req.body.available === 'on' ) {
+        req.body.available = true
+    } else {
+        req.body.available = false
     }
+    try {
+        const newEngineer = await Engineer.create(req.body)
+
+        // Make sure user has an array called 'engineers'
+        if (!req.user.engineers) {
+          req.user.engineers = []
+        }
+
+        // Push the new engineer's ID to the user's engineers array
+        req.user.engineers.push(newEngineer._id)
+
+        // Save the user document to persist the change
+        await req.user.save()
+
+        res.locals.data.engineer = newEngineer
+        next()
+    }
+    catch(error) { 
+        res.status(400).send({message: error.message})
+    }
+}
+
     //Edit
 
     //Show

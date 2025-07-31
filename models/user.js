@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   name: String,
   email: String,
   password: String, 
-  fruits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Fruit'}] //Every single user will have an array of fruits
+  engineers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Engineer'}] //Every single user will have an array of engineers
 })
 
 userSchema.pre('save', async function(next) {
